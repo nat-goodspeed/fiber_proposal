@@ -1,0 +1,80 @@
+\setlength{\parindent}{0pt} 
+\renewcommand\sfdefault{phv}
+
+\makeatletter
+    \renewcommand*\l@subsection{\@dottedtocline{2}{0em}{2.3em}}
+    \renewcommand*\l@subsection{\@dottedtocline{3}{0em}{3.2em}}
+    \renewcommand{\tableofcontents}{%
+        \@starttoc{toc}
+    }
+\makeatother
+
+%\renewcommand{\thesubsection}{\Roman{subsection}}
+
+\newcommand{\pdfimg}[1]{\pdfximage{pics/#1}\pdfrefximage\pdflastximage}
+\newcommand{\img}[1]{\mbox{\pdfimg{#1}}}
+\newcommand{\imgc}[1]{\begin{center}\img{#1}\end{center}}
+
+\lstdefinelanguage
+   [x64]{Assembler}     % add a "x64" dialect of Assembler
+   [x86masm]{Assembler} % based on the "x86masm" dialect
+   % with these extra keywords:
+   {morekeywords={rax,rdx,rcx,rbx,rsi,rdi,rsp,rbp,rip,r8,r9,r10,r11,r12,r13,r14,r15,popq,pushq,movq,subq,addq,xorq,leaq}}
+\lstset{
+        language=[x64]Assembler,
+        numbers=none,
+        numberstyle=\tiny,
+        numberblanklines=false,
+        stepnumber=1,
+        numbersep=10pt
+}
+
+\newcommand{\cpp}[1]{
+    \lstinline[
+        language=C++,
+        basicstyle=\ttfamily\color{black},
+        keywordstyle=\color{blue},
+        commentstyle=\color{green},
+        stringstyle=\color{red},
+    ] {#1}
+}
+\newcommand{\cppf}[1]{
+    \lstinputlisting[
+        language=C++,
+        basicstyle=\ttfamily\color{black},
+        keywordstyle=\color{blue},
+        commentstyle=\color{red},
+        stringstyle=\color{green},
+    ] {code/#1}
+}
+
+\newcommand{\asm}[1]{
+    \lstinline[
+        basicstyle=\ttfamily\color{black},
+        keywordstyle=\color{blue},
+        commentstyle=\color{red},
+        stringstyle=\color{green}
+    ] {#1}
+}
+\newcommand{\asmf}[1]{
+    \lstinputlisting[
+        numbers=left,
+        basicstyle=\ttfamily\color{black},
+        keywordstyle=\color{blue},
+        commentstyle=\color{red},
+        stringstyle=\color{green}
+    ] {code/#1}
+}
+
+\newcommand{\boostcoroutine}{boost.coroutine \cite{coroutine155}\xspace}
+\newcommand{\boostfiber}{boost.fiber \cite{fiber}\xspace}
+
+\newcommand{\abschnitt}[1]{
+    \addcontentsline{toc}{subsection}{#1}
+    \subsection*{#1}
+}
+
+\newcommand{\anhang}[1]{
+    \addcontentsline{toc}{subsection}{#1}
+    \subsection*{#1}
+}
