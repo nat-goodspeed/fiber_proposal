@@ -1,0 +1,41 @@
+\abschnitt{Coroutines}
+\subsubsection*{A Quick Recap of the Coroutine Library}
+A coroutine is instantiated and called. When the invoker calls a coroutine,
+control immediately transfers into that coroutine; when the coroutine yields,
+control immediately returns to its caller (or, in the case of symmetric
+coroutines, to the designated next coroutine).\\
+\newline
+A coroutine does not have a conceptual lifespan independent of its invoker.
+Calling code instantiates a coroutine, passes control back and forth with it
+for some time, and then destroys it. It makes no sense to speak of "detaching"
+a coroutine. It makes no sense to speak of "blocking" a coroutine: the
+coroutine library provides no scheduler. The coroutine library provides no
+facilities for synchronizing coroutines: coroutines are already synchronous.\\
+\newline
+Coroutines do not resemble threads. A coroutine much more closely resembles an
+ordinary function, with a semantic extension: passing control to its caller
+with the expectation of being resumed later at exactly the same point. When
+the invoker resumes a coroutine, the control transfer is immediate. There is
+no intermediary, no agent deciding which coroutine to resume next.\\
+
+\subsubsection*{A Few Coroutine Use Cases}
+Normally, when consumer code calls a producer function to obtain a value, the
+producer must return that value to the consumer, discarding all its local
+state in so doing. A coroutine allows you to write producer code that "pushes"
+values (via function call) to a consumer that "pulls" them with a function
+call.\\
+\newline
+For instance, a coroutine can adapt callbacks, as from a SAX parser, to values
+explicitly requested by the consumer.\\
+\newline
+Moreover, the proposed coroutine library provides iterators over a producer
+coroutine so that a sequence of values from the producer can be fed directly
+into an STL algorithm. This can be used, for example, to flatten a tree
+structure.\\
+\newline
+Coroutines can be chained: a source coroutine can feed values through one or
+more filter coroutines before those values are ultimately delivered to
+consumer code.\\
+\newline
+In all the above examples, as in every coroutine usage, the handshake between
+producer and consumer is direct and immediate.

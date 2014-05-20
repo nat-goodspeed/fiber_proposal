@@ -1,0 +1,25 @@
+\abschnitt{Relationship}
+The authors have a reference implementation of the forthcoming fiber library
+(\boostfiber). The reference implementation is entirely
+coded in portable C++; in fact its original implementation was entirely in
+C++03.\\
+\newline
+This is possible because the reference implementation of the fiber library is
+built on \boostcoroutine, which provides context management. The fiber library
+extends the coroutine library by adding a scheduler and the aforementioned
+synchronization mechanisms.\\
+\newline
+Of course it would be possible to implement coroutines on top of fibers
+instead. But the concepts map more neatly to implementing fibers in terms of
+coroutines. The corresponding operations are:\\
+
+\begin{itemize}
+    \item a coroutine yields;
+    \item a fiber blocks.
+\end{itemize}
+
+When a coroutine yields, it passes control directly to its caller (or, in the
+case of symmetric coroutines, a designated other coroutine).\\
+\newline
+When a fiber blocks, it implicitly passes control to the fiber scheduler.
+Coroutines have no scheduler because they need no scheduler.

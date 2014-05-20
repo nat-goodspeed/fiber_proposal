@@ -1,0 +1,64 @@
+\pdfoutput=1
+\pdfcompresslevel=9
+\pdfinfo
+{
+	/Title (Distinguishing coroutines and fibers)
+	/Author (Oliver Kowalke, Nat Goodspeed)
+	/Keywords (C++ coroutine fiber)
+}
+
+%//////////////////////////////////////////////////////////////////////////////
+
+\documentclass[a4paper,10pt,DIV15]{scrartcl}
+
+\usepackage{overcite}
+\usepackage[british]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{listings}
+\usepackage{rotating}
+\usepackage{xcolor}
+\usepackage{xspace}
+\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
+
+%//////////////////////////////////////////////////////////////////////////////
+
+\input{commands}
+
+%//////////////////////////////////////////////////////////////////////////////
+
+\begin{document}
+
+\small
+\begin{tabbing}
+    Document number: \=  D????\\
+    Date:            \> 2014-05-19 \\
+    Project:         \> Programming Language C++, Library Evolution Working Group\\
+    Reply-to:        \> Oliver Kowalke (oliver dot kowalke at gmail dot com)\\
+                     \> Nat Goodspeed ( nat at lindenlab dot com)\\
+\end{tabbing}
+
+\section*{Distinguishing coroutines and fibers}
+
+%//////////////////////////////////////////////////////////////////////////////
+
+\tableofcontents
+
+%//////////////////////////////////////////////////////////////////////////////
+
+\input{overview}
+\input{background}
+\input{fiber}
+\input{coroutine}
+\input{relationship}
+\input{summary}
+
+%//////////////////////////////////////////////////////////////////////////////
+
+\input{references}
+
+%//////////////////////////////////////////////////////////////////////////////
+
+\end{document}

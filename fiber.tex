@@ -1,63 +1,78 @@
-\pdfoutput=1
-\pdfcompresslevel=9
-\pdfinfo
-{
-	/Title (A proposal to add fibers to the C++ standard library)
-	/Author (Oliver Kowalke, Nat Goodspeed)
-	/Keywords (C++ coroutine fiber)
-}
+\abschnitt{Fibers}
+\subsubsection*{A Quick Sketch of the Fiber Library}
+For purposes of this paper, we can regard the term "fiber" to mean "user-space
+thread." A fiber is launched, and conceptually it can have a lifespan
+independent of the code that launched it. A fiber can be detached from the
+launching code; alternatively, one fiber can join another. A fiber can sleep
+until a specified time, or for a specified duration. Multiple
+conceptually-independent fibers can run on the same kernel thread. When a
+fiber blocks, for instance waiting for a result that's not yet available,
+other fibers on the same thread continue to run. "Blocking" a fiber implicitly
+transfers control to a fiber scheduler to dispatch some other ready-to-run
+fiber.\\
+\newline
+Fibers conceptually resemble kernel threads. In fact, the forthcoming fiber
+library proposal intentionally emulates much of the std::thread API. It
+provides fiber-local storage. It provides several variants of fiber mutexes.
+It provides condition\_variables and barriers. It provides bounded and
+unbounded queues. It provides future, shared\_future, promise and
+packaged\_task. These fiber-oriented synchronization mechanisms differ from
+their thread counterparts in that when (for instance) a mutex blocks its
+caller, it blocks only the calling fiber -- not the whole thread on which that
+fiber is running.\\
+\newline
+When a fiber blocks, it cannot assume that the scheduler will awaken it the
+moment its wait condition has been satisfied. Satisfaction of that condition
+marks the waiting fiber ready-to-run; eventually the scheduler will select
+that ready fiber for dispatch.\\
+\newline
+The key difference between fibers and kernel threads is that fibers use
+cooperative context switching, instead of preemptive time-slicing. Two fibers
+on the same kernel thread will not run simultaneously on different processor
+cores. At most one of the fibers on a particular kernel thread can be running
+at any given moment.\\
+\newline
+This has several implications:
+\begin{itemize}
+    \item Fiber context switching does not engage the kernel: it takes place entirely
+          in user space. This permits a fiber implementation to switch context
+          significantly faster than a thread context switch.
+    \item Two fibers in the same thread cannot execute simultaneously. This can
+          greatly simplify sharing data between such fibers: it is impossible for two
+          fibers in the same thread to race each other. Therefore, within the domain
+          of a particular thread, it is not necessary to lock shared data.
+    \item The coder of a fiber must take care to sprinkle voluntary context switches
+          into long CPU-bound operations. Since fiber context switching is entirely
+          cooperative, a fiber library cannot guarantee progress for every fiber
+          without such precautions.
+    \item A fiber that calls a standard library or operating-system function that
+          blocks the calling thread will in fact block the entire thread on which it
+          is running, including all other fibers on that same thread. The coder of a
+          fiber must take care to use asynchronous I/O operations, or operations that
+          engage fiber blocking rather than thread blocking.
+\end{itemize}
 
-%//////////////////////////////////////////////////////////////////////////////
+In effect, fibers extend the concurrency taxonomy:
+\begin{itemize}
+    \item on a single computer, multiple processes can run
+    \item within a single process, multiple threads can run
+    \item within a single thread, multiple fibers can run.
+\end{itemize}
 
-\documentclass[a4paper,10pt,DIV15]{scrartcl}
-
-\usepackage{overcite}
-\usepackage[british]{babel}
-\usepackage[latin1]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{booktabs}
-\usepackage{fancyhdr}
-\usepackage{listings}
-\usepackage{rotating}
-\usepackage{xcolor}
-\usepackage{xspace}
-\usepackage[colorlinks=true,urlcolor=blue]{hyperref}
-
-%//////////////////////////////////////////////////////////////////////////////
-
-\input{commands}
-
-%//////////////////////////////////////////////////////////////////////////////
-
-\begin{document}
-
-\small
-\begin{tabbing}
-    Document number: \=  \\
-    Date:            \> 2014-04-21 \\
-    Project:         \> Programming Language C++, Library Working Group \\
-    Reply-to:        \> Oliver Kowalke (oliver dot kowalke at gmail dot com)\\
-                     \> Nat Goodspeed ( nat at lindenlab dot com)\\
-\end{tabbing}
-
-\section*{A proposal to add fibers to the C++ standard library}
-
-%//////////////////////////////////////////////////////////////////////////////
-
-\tableofcontents
-
-%//////////////////////////////////////////////////////////////////////////////
-
-\input{introduction}
-\input{motivation}
-\input{impact}
-\input{design}
-\input{specification}
-
-%//////////////////////////////////////////////////////////////////////////////
-
-\input{references}
-
-%//////////////////////////////////////////////////////////////////////////////
-
-\end{document}
+\subsubsection*{A Few Fiber Use Cases}
+A fiber is useful when you want to launch a (possibly complex) sequence of
+asynchronous I/O operations, especially when you must iterate or make
+decisions based on their results.\\
+\newline
+Distinct fibers can be used to perform concurrent asynchronous fetch
+operations, aggregating their results into a fiber-specific queue for another
+fiber to consume.\\
+\newline
+Fibers are useful for organizing response code in an event-driven program.
+Typically, an event handler in such a program cannot block its calling thread:
+that would stall handlers for all other events, such as mouse movement.
+Handlers must use asynchronous I/O instead of blocking I/O. A fiber allows a
+handler to resume upon completion of an asynchronous I/O operation, rather
+than breaking out subsequent logic as a completely distinct handler.\\
+\newline
+[Oliver, can you think of any other helpful fiber use cases to add?]
