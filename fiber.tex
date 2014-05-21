@@ -31,7 +31,7 @@ cooperative context switching, instead of preemptive time-slicing. Two fibers
 on the same kernel thread will not run simultaneously on different processor
 cores. At most one of the fibers on a particular kernel thread can be running
 at any given moment.\\
-\newline
+\newpage
 This has several implications:
 \begin{itemize}
     \item Fiber context switching does not engage the kernel: it takes place entirely
@@ -74,3 +74,20 @@ that would stall handlers for all other events, such as mouse movement.
 Handlers must use asynchronous I/O instead of blocking I/O. A fiber allows a
 handler to resume upon completion of an asynchronous I/O operation, rather
 than breaking out subsequent logic as a completely distinct handler.\\
+\newline
+In the context of task handling fibers can be used to implement \textit{strict
+fork-join task parallelism}\cite{n3832} with its two flavours - \textit{fully-strict
+computation}\cite{n3832} (task in fork-join cannot proceed until it joins all of
+its child-tasks) and \textit{terminally-strict computations}\cite{n3832} (a task
+can exit without joining with its child-task).\\
+Furthermore, different scheduling strategies are possible - work-stealing and
+continuation-stealing.\\
+In the context of work-stealing the scheduler creates a child-task (child-fiber)
+and immediately returns to the caller child-task (child-fiber) are executed or
+stolen by the scheduler based on the avaialble resources (CPU etc.).\\
+While a scheduler, implementing continuation-stealing, immediately executes the
+spawned child-task (child-fiber) execution of the rest of the function
+(continuation) is stolen by the scheduler if resources are available.\\
+This is possible because a fiber, when blocked, preserves (in cotnrast to \tbb)
+its current stack-frame
+\newline
