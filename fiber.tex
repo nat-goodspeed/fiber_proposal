@@ -75,21 +75,21 @@ Handlers must use asynchronous I/O instead of blocking I/O. A fiber allows a
 handler to resume upon completion of an asynchronous I/O operation, rather
 than breaking out subsequent logic as a completely distinct handler.\\
 \newline
-Fibers can be used to implement a task handling framework in order to solve the
+Fibers can be used to implement a task handling framework to address the
 C10K-problem\cite{c10k}.\\
 For instance \textit{strict fork-join task parallelism}\cite{n3832} with its two
-flavours - \textit{fully-strict computation}\cite{n3832} (task in fork-join
-cannot proceed until it joins all of its child-tasks) and
-\textit{terminally-strict computations}\cite{n3832} (a task can exit without
-joining with its child-task) can easily be implemented.\\
-Furthermore, different scheduling strategies are possible - work-stealing and
+flavours - \textit{fully-strict computation}\cite{n3832} (no task
+can proceed until it joins all of its child-tasks) and
+\textit{terminally-strict computations}\cite{n3832} (child-tasks are joined
+only at the end of processing) - can easily be implemented.\\
+Furthermore, different scheduling strategies are possible: work-stealing and
 continuation-stealing.\\
-In the context of work-stealing the scheduler creates a child-task (child-fiber)
-and immediately returns to the caller child-task (child-fiber) are executed or
-stolen by the scheduler based on the avaialble resources (CPU etc.).\\
-While a scheduler, implementing continuation-stealing, immediately executes the
-spawned child-task (child-fiber) execution of the rest of the function
-(continuation) is stolen by the scheduler if resources are available.\\
-This is possible because a fiber, when blocked, preserves (in cotnrast to \tbb)
-its current stack-frame
+For work-stealing, the scheduler creates a child-task (child-fiber)
+and immediately returns to the caller. Each child-task (child-fiber) is executed or
+stolen by the scheduler based on the available resources (CPU etc.).\\
+For continuation-stealing, the scheduler immediately executes the
+spawned child-task (child-fiber); the rest of the function
+(continuation) is stolen by the scheduler as resources are available.\\
+This is possible because a fiber, when blocked, preserves (in contrast to \tbb)
+its current stack-frame.
 \newline
