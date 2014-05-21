@@ -90,6 +90,3 @@ stolen by the scheduler based on the available resources (CPU etc.).\\
 For continuation-stealing, the scheduler immediately executes the
 spawned child-task (child-fiber); the rest of the function
 (continuation) is stolen by the scheduler as resources are available.\\
-This is possible because a fiber, when blocked, preserves (in contrast to \tbb)
-its current stack-frame.
-\newline
