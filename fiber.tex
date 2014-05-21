@@ -75,11 +75,13 @@ Handlers must use asynchronous I/O instead of blocking I/O. A fiber allows a
 handler to resume upon completion of an asynchronous I/O operation, rather
 than breaking out subsequent logic as a completely distinct handler.\\
 \newline
-In the context of task handling fibers can be used to implement \textit{strict
-fork-join task parallelism}\cite{n3832} with its two flavours - \textit{fully-strict
-computation}\cite{n3832} (task in fork-join cannot proceed until it joins all of
-its child-tasks) and \textit{terminally-strict computations}\cite{n3832} (a task
-can exit without joining with its child-task).\\
+Fibers can be used to implement a task handling framework in order to solve the
+C10K-problem\cite{c10k}.\\
+For instance \textit{strict fork-join task parallelism}\cite{n3832} with its two
+flavours - \textit{fully-strict computation}\cite{n3832} (task in fork-join
+cannot proceed until it joins all of its child-tasks) and
+\textit{terminally-strict computations}\cite{n3832} (a task can exit without
+joining with its child-task) can easily be implemented.\\
 Furthermore, different scheduling strategies are possible - work-stealing and
 continuation-stealing.\\
 In the context of work-stealing the scheduler creates a child-task (child-fiber)
